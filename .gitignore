@@ -1,0 +1,3 @@
+# Made by the script on each PC; they hold that PC's own display hardware IDs. Never commit them.
+q27-layout.bin
+*.log
