@@ -2,9 +2,31 @@
 
 **Reproduction, a reset that needs no unplugging, and the evidence behind it**
 
-Written 2026-11-11 from tests on one monitor and one PC. Everything under "Observed" was seen on that hardware on that day. Everything under "Interpretation" is a working explanation that has not been proven.
+Written 2026-11-11 from tests on one monitor and one PC, with a later owner update below. The interpretation is a working explanation that has not been proven.
+
+**Owner's update:** After publishing, the owner restarted the PC. The monitor went black, and the script and power-button steps restored the picture. This is one additional observation on the same setup, not a prevention test.
 
 ---
+
+## Download and use
+
+[Download the ZIP](https://github.com/musha1140/aoc-q27g2g4-black-screen-reset/archive/refs/heads/main.zip), then right-click it in Windows and choose **Extract All**. Open the extracted folder; keep `Q27-reset.cmd` and `q27-path.ps1` together.
+
+For the Q27G2G4 with device ID `AOC2702`, double-click `Q27-reset.cmd`. Once the display signal has stopped, turn the monitor off, count to three, and turn it on. The script attempts to restore the display after 30 seconds. If it does not recover, use the manual reset in section 5b.
+
+**AOC2402 or other device IDs:** The double-click launcher only targets `AOC2702`. In the extracted folder, open a PowerShell window and run:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\q27-path.ps1 -Action Show
+```
+
+Check that the intended active display's device path contains `AOC2402` and that no other active display matches it; the script selects the first match. If it does, run the following, and after the output reports a successful `OFF` (result code 0), turn that monitor off, count to three, and turn it on. The script attempts to restore the saved layout after 30 seconds. If `OFF` is refused or no display matches, nothing was disconnected; do not proceed with the button steps.
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\q27-path.ps1 -Action Cycle -Seconds 30 -Match AOC2402
+```
+
+Use another active screen to see the output while the target display is disconnected. The owner confirms the reset has also been tested on AOC2402. For another device ID, replace `AOC2402` with a unique part of the intended display's device path shown by `Show`.
 
 ## 1. Summary
 
@@ -42,7 +64,7 @@ The hung state and clean power saving look alike on the screen but are different
 Result: hung state. Observed 3 times out of 3 on 2026-11-11 (15:50, 16:20, and about 16:32 with Process Lasso stopped).
 
 **Method B:** restart the PC.
-Result: hung state. Reported by the owner as happening on every restart; not separately timed in these tests.
+Result: hung state. Reported by the owner as happening on every restart; not separately timed in the original tests. After publication, the owner restarted once and recovered the picture using the script and power-button steps.
 
 ## 5. How to recover
 
@@ -55,7 +77,7 @@ Result: hung state. Reported by the owner as happening on every restart; not sep
 3. Count to three and press it **on**.
 4. Make the PC send a signal again: "Extend desktop to this display" (the script does this after 30 seconds).
 
-Result: picture returns. Observed 2 times out of 2 using the script (16:23 to 16:24, and 16:33 to 16:34). The Windows Settings route for step 1 and 4 uses the same Windows function as the script, but has not yet been tested together with the button.
+Result: picture returns. Observed 2 times out of 2 using the script (16:23 to 16:24, and 16:33 to 16:34), and once more by the owner after a PC restart. The Windows Settings route for step 1 and 4 uses the same Windows function as the script, but has not yet been tested together with the button.
 
 ### 5b. Original reset (owner's method, used for weeks)
 
@@ -146,15 +168,15 @@ powershell -NoProfile -ExecutionPolicy Bypass -File q27-path.ps1 -Action Cycle -
 ## 10. Still open
 
 1. **Prevention.** The reset recovers the monitor; it does not stop the hang happening. The aim is for the PC to hold back its signal automatically whenever the monitor is starting.
-2. The PC-restart case, step by step.
+2. The PC-restart hang, step by step: the reset worked after a restart, but the cause of the hang was not traced.
 3. Button test with the Razer services stopped. (Done for Process Lasso: it still hangs.)
 4. An older graphics driver, and DP Capability 1.1, as comparisons.
 
 ---
 
-## Status (2026-11-11)
+## Status
 
-This is a **reset, not a cure**. The hang still happens; this brings the picture back without pulling the power plug. It worked 2 times out of 2 on the hardware in section 2. Not yet tested: the route through Windows Settings alone, and whether disconnecting the display before a restart avoids the hang.
+This is a **reset, not a cure**. The hang still happens; this brings the picture back without pulling the power plug. It worked twice in the original tests and once after a subsequent PC restart on the hardware in section 2. Not yet tested: the route through Windows Settings alone, and whether disconnecting the display before a restart avoids the hang.
 
 ## Contributing
 
